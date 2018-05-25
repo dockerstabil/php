@@ -49,5 +49,5 @@ fi
 for tpl in Dockerfile.*.tpl; do
 	dest_dir=${tpl%.tpl}
 	dest_dir=${dest_dir#Dockerfile.}
-	"$envy_cmd" "$tpl" *.inc "$dest_dir/Dockerfile"
+	"$envy_cmd" --output="$dest_dir/Dockerfile" "$tpl" *.inc
 done
