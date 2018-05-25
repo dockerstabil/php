@@ -1,4 +1,4 @@
-FROM php:5.6.36-apache-stretch
+FROM php:7.0.30-apache-stretch
 
 
 # workdir
