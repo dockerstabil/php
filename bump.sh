@@ -49,5 +49,10 @@ fi
 for tpl in Dockerfile.*.tpl; do
 	dest_dir=${tpl%.tpl}
 	dest_dir=${dest_dir#Dockerfile.}
-	"$envy_cmd" --output="$dest_dir/Dockerfile" "$tpl" *.inc
+	docker_file="$dest_dir/Dockerfile"
+	"$envy_cmd" --output="$docker_file" "$tpl" *.inc
+	git add "$docker_file"
 done
+
+git commit -m "$PHP_VERSION"
+git tag "$PHP_VERSION"
