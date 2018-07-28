@@ -13,7 +13,17 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
     # enable .htaccess
     && sed -i 's/\(AllowOverride\s\)None/\1All/' $APACHE_CONFDIR/apache2.conf \
     # enable apache modules
-    && a2enmod headers proxy proxy_http rewrite ssl
+    && a2enmod \
+        auth_basic\
+        auth_digest\
+        authn_dbm\
+        authn_file\
+        authz_groupfile\
+        headers\
+        proxy_http\
+        proxy\
+        rewrite\
+        ssl
 
 
 {{template "Dockerfile.prerequisites.inc" .}}
