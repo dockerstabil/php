@@ -16,11 +16,11 @@ WORKDIR /app
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     # preliminaries
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install apt-utils \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential git gpg libpq-dev libsqlite3-dev unzip zip zlib1g-dev \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential git gpg libpq-dev libsqlite3-dev libxml2-dev unzip zip zlib1g-dev \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
     # install extensions
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pdo_sqlite zip
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pdo_sqlite soap zip
 
 
 # composer
