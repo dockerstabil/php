@@ -30,6 +30,10 @@ if [ $# -ne 1 ]; then
 fi
 export PHP_VERSION=$1
 
+patch=$(git tag | ( grep -s "^$PHP_VERSION-" || true) | sed "s/^$PHP_VERSION-//" | sort | tail -n1)
+if [ -n "$patch" ]; then
+	patch="-$((patch + 1))"
+fi
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
@@ -50,9 +54,9 @@ for tpl in Dockerfile.*.tpl; do
 	dest_dir=${tpl%.tpl}
 	dest_dir=${dest_dir#Dockerfile.}
 	docker_file="$dest_dir/Dockerfile"
-	"$envy_cmd" --output="$docker_file" "$tpl" *.inc
-	git add "$docker_file"
+	"$envy_cmd" --output="$docker_file" --input="$tpl" *.tpl *.inc
+	git add "$dest_dir"
 done
 
-git commit -m "$PHP_VERSION"
-git tag "$PHP_VERSION"
+git commit -m "$PHP_VERSION$patch"
+git tag "$PHP_VERSION$patch"
