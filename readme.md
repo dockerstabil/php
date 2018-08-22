@@ -6,9 +6,11 @@
 ```bash
 # apache
 docker run -p 80:80 -v "$PWD":/app --rm -it dockerstabil/php:apache
+docker run -p 80:80 -v "$PWD":/app --rm -it dockerstabil/php:apache-dev
 
 # cli
 docker run -v "$PWD":/app --rm -it dockerstabil/php:cli php -v
+docker run -v "$PWD":/app --rm -it dockerstabil/php:cli-dev php -v
 ```
 
 
