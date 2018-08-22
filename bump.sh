@@ -4,6 +4,9 @@ set -o errexit  # exit on [ $? != 0 ]
 set -o nounset  # exit on uninitialized vars
 set -o pipefail # exit on pipeline errors
 
+LATEST_PHP_VERSION=$(git tag | ( grep -vs "-" || true ) | sort | tail -n1)
+GIT_COMMIT=${GIT_COMMIT:-true}
+
 echoInfo () {
   echo -e "\033[1;94m[info]\033[0m $*"
 }
@@ -18,22 +21,24 @@ echoErrorUsage () {
 		echoError ""
 	fi
 	echoError "usage:"
-	echoError "\t$BASH_SOURCE PHP_VERSION"
+	echoError "\t[ENV] $BASH_SOURCE PHP_VERSION"
 	echoError ""
-	echoError "example:"
-	echoError "\t$BASH_SOURCE 7.2.5"
+	echoError "ENV:"
+	echoError "\t GIT_COMMIT  create git commit (default: true)"
+	echoError ""
+	echoError "examples:"
+	echoError "\t$BASH_SOURCE $LATEST_PHP_VERSION"
+	echoError "\tGIT_COMMIT=false $BASH_SOURCE $LATEST_PHP_VERSION"
 }
 
 if [ $# -ne 1 ]; then
 	echoErrorUsage "Wrong number of arguments (given $#, expected 1)"
 	exit 2
+elif [ "$1" = "-h" ]; then
+	echoErrorUsage
+	exit 0
 fi
 export PHP_VERSION=$1
-
-patch=$(git tag | ( grep -s "^$PHP_VERSION-" || true) | sed "s/^$PHP_VERSION-//" | sort | tail -n1)
-if [ -n "$patch" ]; then
-	patch="-$((patch + 1))"
-fi
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
@@ -55,8 +60,17 @@ for tpl in Dockerfile.*.tpl; do
 	dest_dir=${dest_dir#Dockerfile.}
 	docker_file="$dest_dir/Dockerfile"
 	"$envy_cmd" --output="$docker_file" --input="$tpl" *.tpl *.inc
-	git add "$dest_dir"
+
+	[ "$GIT_COMMIT" = true ] && git add "$dest_dir"
 done
 
-git commit -m "$PHP_VERSION$patch"
-git tag "$PHP_VERSION$patch"
+if [ "$GIT_COMMIT" = true ]; then
+	patch=$(git tag | ( grep -s "^$PHP_VERSION-" || true) | sed "s/^$PHP_VERSION-//" | sort | tail -n1)
+
+	if [ -n "$patch" ]; then
+		patch="-$((patch + 1))"
+	fi
+
+	git commit -m "$PHP_VERSION$patch"
+	git tag "$PHP_VERSION$patch"
+fi
