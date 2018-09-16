@@ -40,7 +40,7 @@ RUN echo 'phar.readonly=0' > /usr/local/etc/php/conf.d/dockerstabil-phar.ini
 # setup xdebug
 ARG xdebug_version=2.6.1
 
-RUN pecl install xdebug \
+RUN pecl install xdebug-$xdebug_version \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.remote_enable=1\n\
 xdebug.remote_autostart=1\n\
