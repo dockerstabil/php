@@ -71,6 +71,9 @@ if [ "$GIT_COMMIT" = true ]; then
 		patch="-$((patch + 1))"
 	fi
 
-	git commit -m "$PHP_VERSION$patch"
+	if [ -n "$(git status --porcelain)" ]; then
+		git commit -m "$PHP_VERSION$patch"
+	fi
+
 	git tag "$PHP_VERSION$patch"
 fi
