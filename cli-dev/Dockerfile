@@ -1,4 +1,4 @@
-FROM php:7.2.8-cli-stretch
+FROM php:5.6.38-cli-stretch
 
 
 # workdir
@@ -38,7 +38,7 @@ RUN echo 'phar.readonly=0' > /usr/local/etc/php/conf.d/dockerstabil-phar.ini
 
 
 # setup xdebug
-ARG xdebug_version=2.6.1
+ARG xdebug_version=2.5.5
 
 RUN pecl install xdebug-$xdebug_version \
     && docker-php-ext-enable xdebug \

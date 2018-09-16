@@ -1,5 +1,5 @@
 # setup xdebug
-ARG xdebug_version=2.6.1
+ARG xdebug_version=2.5.5
 
 RUN pecl install xdebug-$xdebug_version \
     && docker-php-ext-enable xdebug \
