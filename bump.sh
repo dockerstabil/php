@@ -65,10 +65,11 @@ for tpl in Dockerfile.*.tpl; do
 done
 
 if [ "$GIT_COMMIT" = true ]; then
-	patch=$(git tag | ( grep -s "^$PHP_VERSION-" || true) | sed "s/^$PHP_VERSION-//" | sort | tail -n1)
-
-	if [ -n "$patch" ]; then
+	if [ -n "$(git tag | grep -s "^$PHP_VERSION")" ]; then
+		patch=$(git tag | ( grep -s "^$PHP_VERSION" || true) | sed "s/^$PHP_VERSION-\?//" | sort | tail -n1)
 		patch="-$((patch + 1))"
+	else
+		patch=""
 	fi
 
 	if [ -n "$(git status --porcelain)" ]; then
