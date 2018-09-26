@@ -36,7 +36,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     # preliminaries
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install apt-utils \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential git gpg libpq-dev libsqlite3-dev libxml2-dev unzip zip zlib1g-dev \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qy install crudini build-essential git gpg libpq-dev libsqlite3-dev libxml2-dev unzip zip zlib1g-dev \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
     # install extensions
@@ -47,7 +47,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
 RUN mkdir -p /opt/composer \
     && ln -s /opt/composer/composer.phar /usr/local/bin/composer \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
     && php composer-setup.php --install-dir=/opt/composer --filename=composer.phar \
     && php -r "unlink('composer-setup.php');"
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
@@ -62,7 +62,9 @@ ARG xdebug_version=2.6.1
 
 RUN pecl install xdebug-$xdebug_version \
     && docker-php-ext-enable xdebug \
-    && echo "xdebug.remote_enable=1\n\
-xdebug.remote_autostart=1\n\
-" > /usr/local/etc/php/conf.d/dockerstabil-xdebug.ini
+    && xdebug_ini=$(php --ini | grep xdebug | sed 's/,$//' | tail -n1) \
+    && crudini --set "$xdebug_ini" XDebug xdebug.remote_enable 1 \
+    && crudini --set "$xdebug_ini" XDebug xdebug.remote_autostart 1 \
+    && crudini --set "$xdebug_ini" XDebug xdebug.cli_color 1 \
+    && crudini --set "$xdebug_ini" XDebug xdebug.var_display_max_children 512
 
