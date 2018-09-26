@@ -8,7 +8,7 @@
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     # preliminaries
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install apt-utils \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential git gpg libpq-dev libsqlite3-dev libxml2-dev unzip zip zlib1g-dev \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qy install crudini build-essential git gpg libpq-dev libsqlite3-dev libxml2-dev unzip zip zlib1g-dev \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
     # install extensions
