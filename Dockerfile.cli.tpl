@@ -8,4 +8,6 @@ WORKDIR /app
 
 {{template "Dockerfile.prerequisites.inc" .}}
 
+{{template "Dockerfile.ast.inc" .}}
+
 {{template "Dockerfile.composer.inc" .}}
