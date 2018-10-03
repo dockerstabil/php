@@ -23,6 +23,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     && docker-php-ext-install bcmath pdo pdo_mysql pdo_pgsql pdo_sqlite soap zip
 
 
+# install https://github.com/nikic/php-ast
+RUN pecl install ast \
+    && docker-php-ext-enable ast
+
+
 # composer
 RUN mkdir -p /opt/composer \
     && ln -s /opt/composer/composer.phar /usr/local/bin/composer \
