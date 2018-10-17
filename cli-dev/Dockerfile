@@ -1,4 +1,4 @@
-FROM php:7.2.11-cli-stretch
+FROM php:7.0.32-cli-stretch
 
 
 # workdir
@@ -18,6 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install apt-utils \
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install \
         build-essential \
+        cracklib-runtime \
         crudini \
         git \
         gpg \
