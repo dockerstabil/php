@@ -16,11 +16,37 @@ WORKDIR /app
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     # preliminaries
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install apt-utils \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qy install build-essential crudini git gpg libpq-dev libsqlite3-dev libxml2-dev unzip zip zlib1g-dev \
+    && DEBIAN_FRONTEND=noninteractive apt-get -qy install \
+        build-essential \
+        crudini \
+        git \
+        gpg \
+        libldap2-dev \
+        libldb-dev \
+        libpng-dev \
+        libpq-dev \
+        libsqlite3-dev \
+        libxml2-dev \
+        libzip-dev \
+        unzip \
+        zip \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
+    # configure extensions
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+    && docker-php-ext-configure zip --with-libzip \
     # install extensions
-    && docker-php-ext-install bcmath pdo pdo_mysql pdo_pgsql pdo_sqlite soap zip
+    && docker-php-ext-install \
+        bcmath \
+        gd \
+        ldap \
+        pdo \
+        pdo_mysql \
+        pdo_pgsql \
+        pdo_sqlite \
+        pgsql \
+        soap \
+        zip
 
 
 # composer
