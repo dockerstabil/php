@@ -1,4 +1,4 @@
-FROM php:7.0.32-cli-stretch
+FROM php:7.2.11-cli-stretch
 
 
 # workdir
