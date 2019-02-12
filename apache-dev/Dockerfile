@@ -1,4 +1,4 @@
-FROM php:7.3.1-apache-stretch
+FROM php:7.3.2-apache-stretch
 
 
 # workdir
@@ -79,7 +79,7 @@ RUN pecl install ast \
 RUN mkdir -p /opt/composer \
     && ln -s /opt/composer/composer.phar /usr/local/bin/composer \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('SHA384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php -r "if (hash_file('SHA384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
     && php composer-setup.php --install-dir=/opt/composer --filename=composer.phar \
     && php -r "unlink('composer-setup.php');"
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
@@ -90,7 +90,7 @@ RUN echo 'phar.readonly=0' > /usr/local/etc/php/conf.d/dockerstabil-phar.ini
 
 
 # setup xdebug
-ARG xdebug_version=2.7.0beta1
+ARG xdebug_version=2.7.0RC1
 
 RUN pecl install xdebug-$xdebug_version \
     && docker-php-ext-enable xdebug \
