@@ -29,10 +29,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         libsqlite3-dev \
         libxml2-dev \
         libzip-dev \
+        locales \
         unzip \
         zip \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
+    # generate de_DE.UTF-8 locale
+    && sed -i.orig -e '/^# de_DE.UTF-8 UTF-8/ s/^# //' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
     # configure extensions
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
     && docker-php-ext-configure zip --with-libzip \
