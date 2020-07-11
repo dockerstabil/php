@@ -31,7 +31,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     && dpkg-reconfigure --frontend=noninteractive locales \
     # configure extensions
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-    && docker-php-ext-configure zip --with-libzip \
+    && docker-php-ext-configure zip \
     # install extensions
     && docker-php-ext-install \
         bcmath \
@@ -44,3 +44,5 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         pgsql \
         soap \
         zip
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

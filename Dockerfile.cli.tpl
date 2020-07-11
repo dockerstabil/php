@@ -1,4 +1,4 @@
-FROM php:{{.PHP_VERSION}}-cli-stretch
+FROM php:{{.PHP_VERSION}}-cli-buster
 
 
 # workdir
@@ -9,5 +9,3 @@ WORKDIR /app
 {{template "Dockerfile.prerequisites.inc" .}}
 
 {{template "Dockerfile.ast.inc" .}}
-
-{{template "Dockerfile.composer.inc" .}}

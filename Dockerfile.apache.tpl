@@ -1,4 +1,4 @@
-FROM php:{{.PHP_VERSION}}-apache-stretch
+FROM php:{{.PHP_VERSION}}-apache-buster
 
 
 # workdir
@@ -29,5 +29,3 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 {{template "Dockerfile.prerequisites.inc" .}}
 
 {{template "Dockerfile.ast.inc" .}}
-
-{{template "Dockerfile.composer.inc" .}}

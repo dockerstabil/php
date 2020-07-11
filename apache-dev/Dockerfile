@@ -1,4 +1,4 @@
-FROM php:7.3.6-apache-stretch
+FROM php:7.4.8-apache-buster
 
 
 # workdir
@@ -59,7 +59,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
     && dpkg-reconfigure --frontend=noninteractive locales \
     # configure extensions
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
-    && docker-php-ext-configure zip --with-libzip \
+    && docker-php-ext-configure zip \
     # install extensions
     && docker-php-ext-install \
         bcmath \
@@ -73,20 +73,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         soap \
         zip
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 
 # install https://github.com/nikic/php-ast
 RUN pecl install ast \
     && docker-php-ext-enable ast
-
-
-# composer
-RUN mkdir -p /opt/composer \
-    && ln -s /opt/composer/composer.phar /usr/local/bin/composer \
-    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('SHA384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php --install-dir=/opt/composer --filename=composer.phar \
-    && php -r "unlink('composer-setup.php');"
-ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 
 # allow creation and modification of Phar archives
@@ -94,7 +86,7 @@ RUN echo 'phar.readonly=0' > /usr/local/etc/php/conf.d/dockerstabil-phar.ini
 
 
 # setup xdebug
-ARG xdebug_version=2.7.2
+ARG xdebug_version=2.9.6
 
 RUN pecl install xdebug-$xdebug_version \
     && docker-php-ext-enable xdebug \
