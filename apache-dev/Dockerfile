@@ -1,4 +1,4 @@
-FROM php:7.4.8-apache-buster
+FROM php:7.4.12-apache-buster
 
 
 # workdir
@@ -73,7 +73,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         soap \
         zip
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1.10.17 /usr/bin/composer /usr/bin/composer
 
 
 # install https://github.com/nikic/php-ast
