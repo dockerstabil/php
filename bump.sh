@@ -42,6 +42,8 @@ export PHP_VERSION=$1
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
+
+# verify envy is available
 if [ -x ./envy ]; then
 	envy_cmd=./envy
 elif command -v envy >/dev/null 2>&1; then
@@ -55,15 +57,23 @@ else
 fi
 
 
+# bump Dockerfiles
 for tpl in Dockerfile.*.tpl; do
 	dest_dir=${tpl%.tpl}
 	dest_dir=${dest_dir#Dockerfile.}
 	docker_file="$dest_dir/Dockerfile"
-	"$envy_cmd" --output="$docker_file" --input="$tpl" *.tpl *.inc
 
+	"$envy_cmd" --output="$docker_file" --input="$tpl" *.tpl *.inc
 	[ "$GIT_COMMIT" = true ] && git add "$dest_dir"
 done
 
+
+# bump readme
+"$envy_cmd" --output="readme.md" "readme.tpl.md"
+[ "$GIT_COMMIT" = true ] && git add "readme.md"
+
+
+# create git tag and commit
 if [ "$GIT_COMMIT" = true ]; then
 	if [ -n "$(git tag | grep -s "^$PHP_VERSION")" ]; then
 		patch=$(git tag | ( grep -s "^$PHP_VERSION" || true) | sed "s/^$PHP_VERSION-\?//" | sort | tail -n1)
