@@ -45,4 +45,4 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         soap \
         zip
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:{{.COMPOSER_VERSION}} /usr/bin/composer /usr/bin/composer

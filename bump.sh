@@ -4,7 +4,10 @@ set -o errexit  # exit on [ $? != 0 ]
 set -o nounset  # exit on uninitialized vars
 set -o pipefail # exit on pipeline errors
 
-LATEST_PHP_VERSION=$(git tag | ( grep -vs "-" || true ) | sort | tail -n1)
+cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
+
+LATEST_PHP_VERSION=$(awk '$1 == "FROM" {match($2, /php:([^-]*)/, m); print m[1]; exit}' "apache/Dockerfile")
+LATEST_COMPOSER_VERSION=$(awk '/COPY --from=composer:/ {match($2, /--from=composer:(.*)/, m); print m[1]; exit}' "apache/Dockerfile")
 GIT_COMMIT=${GIT_COMMIT:-true}
 
 echoInfo () {
@@ -15,32 +18,29 @@ echoError () {
   echo >&2 -e "\033[1;31m[error]\033[0m $*"
 }
 
-echoErrorUsage () {
-	if [ $# -gt 0 ]; then
-		echoError "$1"
-		echoError ""
-	fi
-	echoError "usage:"
-	echoError "\t[ENV] $BASH_SOURCE PHP_VERSION"
-	echoError ""
-	echoError "ENV:"
-	echoError "\t GIT_COMMIT  create git commit (default: true)"
-	echoError ""
-	echoError "examples:"
-	echoError "\t$BASH_SOURCE $LATEST_PHP_VERSION"
-	echoError "\tGIT_COMMIT=false $BASH_SOURCE $LATEST_PHP_VERSION"
+echoUsage () {
+	echoInfo "usage:"
+	echoInfo "\t[ENV] $BASH_SOURCE PHP_VERSION COMPOSER_VERSION"
+	echoInfo ""
+	echoInfo "ENV:"
+	echoInfo "\t GIT_COMMIT  create git commit (default: true)"
+	echoInfo ""
+	echoInfo "examples:"
+	echoInfo "\t$BASH_SOURCE $LATEST_PHP_VERSION $LATEST_COMPOSER_VERSION"
+	echoInfo "\tGIT_COMMIT=false $BASH_SOURCE $LATEST_PHP_VERSION $LATEST_COMPOSER_VERSION"
 }
 
-if [ $# -ne 1 ]; then
-	echoErrorUsage "Wrong number of arguments (given $#, expected 1)"
+# args
+if [ $# -ne 2 ]; then
+	echoError "Wrong number of arguments (given $#, expected 2)"
+	echoUsage 
 	exit 2
 elif [ "$1" = "-h" ]; then
-	echoErrorUsage
+	echoUsage
 	exit 0
 fi
 export PHP_VERSION=$1
-
-cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
+export COMPOSER_VERSION=$2
 
 
 # verify envy is available
