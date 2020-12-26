@@ -14,6 +14,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         crudini \
         git \
         gpg \
+        inotify-tools \
         libldap2-dev \
         libldb-dev \
         libpng-dev \
