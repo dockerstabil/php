@@ -1,4 +1,4 @@
-FROM php:7.4.12-apache-buster
+FROM php:7.4.13-apache-buster
 
 
 # workdir
@@ -42,6 +42,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         crudini \
         git \
         gpg \
+        inotify-tools \
         libldap2-dev \
         libldb-dev \
         libpng-dev \
@@ -73,7 +74,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qy update \
         soap \
         zip
 
-COPY --from=composer:1.10.17 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.0.8 /usr/bin/composer /usr/bin/composer
 
 
 # install https://github.com/nikic/php-ast
